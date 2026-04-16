@@ -47,48 +47,53 @@ def buscar_pontos(matriz):
 
 def permutacao(pontos, destino):
     '''
-    Utiliza as coordenadas registradas no dicionário "pontos" e reliza todas as
+    Utiliza as coordenadas registradas no dicionário "pontos" e realiza todas as
     permutações possíveis
     '''
     permutacoes = []
+    todas_distancias = []
     for j in permutations(pontos):
         permutacoes.append(j)
     
     print(permutacoes)
-    
-    '''Qunado retornar, devo consertar as funções e inicializar o código'''
 
     cont = 0
+    
+    origem = destino['R']
+
     for permutacao in permutacoes:
         tamanho = len(permutacao)
+        cont = 0
+        soma = 0
         for cidade in permutacao:
+
+            atual = pontos[cidade]
+
             if cont == 0:
-                p1 = destino['R']
-                cont += 1
+                soma += distancia(origem, atual)
             
-            elif cont == tamanho:
-                p2 = destino['R']
+            elif cont == tamanho - 1:
+                soma += distancia(prox, atual)
+                soma += distancia(atual, origem)
+                todas_distancias.append({'permutacao': permutacao, 'distancia': soma})
             
-            if cidade:
-                if cont == 0:
-                    p2 = pontos[cidade]
-                
-                elif cont == tamanho:
-                    p1 = pontos[cidade]
-                    cont = 0
-                
-                else:
-                    p1 = pontos[cidade]
-                    '''p2 = '''
-                    cont += 1
-
-
-                
-
-
-                
+            else:
+                soma += distancia(prox, atual)
             
+            prox = atual
+            cont += 1
     
+    menor = 1000000
+    for m in todas_distancias:
+        if m['distancia'] < menor:
+
+            menor = m['distancia']
+            sequencia = m['permutacao']
+        
+    print('\nmenor distância: {}'.format(menor))
+    print('permutação: {}'.format(sequencia))
+
+
 
 def distancia(p1, p2):
     x0, y0 = p1
@@ -106,5 +111,6 @@ def distancia(p1, p2):
 
     return dx + dy
 
-ler_matriz()
-    
+matriz = ler_matriz()
+pontos, destino = buscar_pontos(matriz)
+permutacao(pontos, destino)
