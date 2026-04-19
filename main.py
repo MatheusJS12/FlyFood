@@ -1,6 +1,7 @@
 
 import sys
 from itertools import permutations
+import datetime
 
 def ler_matriz():
     """
@@ -52,16 +53,18 @@ def permutacao(pontos, destino):
     '''
     permutacoes = []
     todas_distancias = []
-    for j in permutations(pontos):
+    '''for j in permutations(pontos):
         permutacoes.append(j)
     
-    print(permutacoes)
+    print(permutacoes)'''
 
     cont = 0
+    menor = 1000000
+    permut = None
     
     origem = destino['R']
 
-    for permutacao in permutacoes:
+    for permutacao in permutations(pontos):
         tamanho = len(permutacao)
         cont = 0
         soma = 0
@@ -75,23 +78,18 @@ def permutacao(pontos, destino):
             elif cont == tamanho - 1:
                 soma += distancia(prox, atual)
                 soma += distancia(atual, origem)
-                todas_distancias.append({'permutacao': permutacao, 'distancia': soma})
+                if soma < menor:
+                    menor = soma
+                    permut = permutacao
             
             else:
                 soma += distancia(prox, atual)
             
             prox = atual
             cont += 1
-    
-    menor = 1000000
-    for m in todas_distancias:
-        if m['distancia'] < menor:
-
-            menor = m['distancia']
-            sequencia = m['permutacao']
         
     print('\nmenor distância: {}'.format(menor))
-    print('permutação: {}'.format(sequencia))
+    print('permutação: {}'.format(permut))
 
 
 
@@ -111,6 +109,11 @@ def distancia(p1, p2):
 
     return dx + dy
 
+inicio = datetime.datetime.now()
 matriz = ler_matriz()
 pontos, destino = buscar_pontos(matriz)
 permutacao(pontos, destino)
+fim = datetime.datetime.now()
+print('tempo de execução: {}'.format(fim - inicio))
+
+'''Get-Content input.txt | python main.py'''
