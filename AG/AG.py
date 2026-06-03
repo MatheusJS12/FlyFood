@@ -1,0 +1,344 @@
+from deap import creator, algorithms, base, tools
+import random
+import numpy
+
+toolbox = base.Toolbox()
+
+'''#from file import *
+
+objArq = open("edgesbrasil58.tsp")
+#se você quiser uma lista onde cada objeto será uma string
+#grande representando uma linha do arquivo:
+#listaLinhas = objArq.readlines() #obs: cada linha terah um enter junto com o ultimo elemento
+
+distancias = {}
+
+for i in range(0, 57): #linhas 1 a 57 pois a 58 nao terá aresta
+	linha = objArq.readline() #le só uma linha do arquivo
+	#transformando a linha em lista de strings:
+	lista = linha.split() #obs: lista de strings (não int)
+
+	for j in range(i+1, 58): #colunas i+1 a 58
+		if len(lista) > 0:
+			peso = int(lista.pop(0)) #obs: peso int, poderia ser float em outro problema
+		else:
+			print(f"Erro! linha {i} do arquivo não possui elementos suficientes")
+			exit()
+		#gravando a aresta em (i, j) e (j, i):
+		distancias[(i,j)] = peso
+		distancias[(j,i)] = peso
+objArq.close()'''
+
+#funcao que retorna o custo total do caminho:
+'''def custoCaminho(permutacao, dicDistancias):
+	#ex: permutacao = [5, 14, 2, 3, 7, ...]
+	soma = 0
+	for i in range(len(permutacao)-1):
+		a = permutacao[i]
+		b = permutacao[i+1]
+		if (a,b) in dicDistancias:
+			soma += dicDistancias[(a,b)]
+		else:
+			print(f"Erro! ({a},{b}) não existe no dicionario!")
+			exit()
+	soma += dicDistancias[(permutacao[-1],permutacao[0])]
+	return soma
+
+def inicializaPopulacao(tamanho, qtdeCidades):
+	#criando uma lista com "tamanho" permutacoes aleatorias de cidades:
+	lista = []
+	for i in range(tamanho):
+		individuo = list(range(qtdeCidades))
+		random.shuffle(individuo)
+		lista.append(individuo)
+	return lista
+
+def calculaAptidao(populacao, dicDistancias):
+	listaAptidao = []
+	for elem in populacao:
+		listaAptidao.append(custoCaminho(elem, dicDistancias))
+	return listaAptidao
+
+def aptidao(individuo):
+	return (custoCaminho(individuo, distancias),)
+
+def salvarstatus(individuo):
+	return individuo.fitness.values
+
+creator.create('Minimizacao', base.Fitness, weights=(-1.0,))
+creator.create('Individuo', list, fitness=creator.Minimizacao)
+
+pop_inicial = inicializaPopulacao(300, 58)'''
+
+'''toolbox.register('cidades', numpy.random.permutation, pontos)
+toolbox.register('individuos', tools.initIterate, creator.Individuo, toolbox.cidades)
+toolbox.register('populacao', tools.initRepeat, list, toolbox.individuos)
+
+populacao_inicial = toolbox.populacao(n=100)'''
+
+'''pop_inicial_format = [creator.Individuo(ind) for ind in pop_inicial]
+
+toolbox.register('mate', tools.cxOrdered)
+toolbox.register('mutate', tools.mutShuffleIndexes, indpb=0.02)
+toolbox.register('select', tools.selTournament, tournsize=5)
+
+toolbox.register('evaluate', aptidao)
+
+estatistica = tools.Statistics(salvarstatus)
+estatistica.register('mean', numpy.mean)
+estatistica.register('min', numpy.min)
+estatistica.register('max', numpy.max)
+
+hallofame = tools.HallOfFame(1)
+
+
+result, log = algorithms.eaSimple(pop_inicial_format, toolbox, cxpb=0.8, mutpb=0.1,stats=estatistica,halloffame=hallofame, ngen=10000, verbose=True)
+
+print(result)
+print('\nMelhor rota: ', hallofame)'''
+
+
+#from file import *
+
+toolbox = base.Toolbox
+
+objArq = open("matriz14_with_R.tsp")
+#se você quiser uma lista onde cada objeto será uma string
+#grande representando uma linha do arquivo:
+#listaLinhas = objArq.readlines() #obs: cada linha terah um enter junto com o ultimo elemento
+
+distancias = {}
+
+for i in range(0, 15): #linhas 1 a 57 pois a 58 nao terá aresta
+	linha = objArq.readline() #le só uma linha do arquivo
+	#transformando a linha em lista de strings:
+	lista = linha.split() #obs: lista de strings (não int)
+
+	for j in range(i+1, 15): #colunas i+1 a 58
+		if len(lista) > 0:
+			peso = int(lista.pop(0)) #obs: peso int, poderia ser float em outro problema
+		else:
+			print(f"Erro! linha {i} do arquivo não possui elementos suficientes")
+			exit()
+		#gravando a aresta em (i, j) e (j, i):
+		distancias[(i,j)] = peso
+		distancias[(j,i)] = peso
+objArq.close()
+
+#funcao que retorna o custo total do caminho:
+def custoCaminho(permutacao, dicDistancias):
+	#ex: permutacao = [5, 14, 2, 3, 7, ...]
+	soma = 0
+	for i in range(len(permutacao)-1):
+		a = permutacao[i]
+		b = permutacao[i+1]
+		if (a,b) in dicDistancias:
+			soma += dicDistancias[(a,b)]
+		else:
+			print(f"Erro! ({a},{b}) não existe no dicionario!")
+			exit()
+	soma += dicDistancias[(permutacao[-1],permutacao[0])]
+	return soma
+
+def inicializaPopulacao(tamanho, qtdeCidades):
+	import random
+	#criando uma lista com "tamanho" permutacoes aleatorias de cidades:
+	lista = []
+	for i in range(tamanho):
+		individuo = list(range(qtdeCidades))
+		random.shuffle(individuo)
+		lista.append(individuo)
+	return lista
+
+def calculaAptidao(populacao, dicDistancias):
+	listaAptidao = []
+	for elem in populacao:
+		listaAptidao.append(custoCaminho(elem, dicDistancias))
+	return listaAptidao
+
+def varOr(population, toolbox, lambda_, cxpb, mutpb):
+    r"""Part of an evolutionary algorithm applying only the variation part
+    (crossover, mutation **or** reproduction). The modified individuals have
+    their fitness invalidated. The individuals are cloned so returned
+    population is independent of the input population.
+
+    :param population: A list of individuals to vary.
+    :param toolbox: A :class:`~deap.base.Toolbox` that contains the evolution
+                    operators.
+    :param lambda\_: The number of children to produce
+    :param cxpb: The probability of mating two individuals.
+    :param mutpb: The probability of mutating an individual.
+    :returns: The final population.
+
+    The variation goes as follow. On each of the *lambda_* iteration, it
+    selects one of the three operations; crossover, mutation or reproduction.
+    In the case of a crossover, two individuals are selected at random from
+    the parental population :math:`P_\mathrm{p}`, those individuals are cloned
+    using the :meth:`toolbox.clone` method and then mated using the
+    :meth:`toolbox.mate` method. Only the first child is appended to the
+    offspring population :math:`P_\mathrm{o}`, the second child is discarded.
+    In the case of a mutation, one individual is selected at random from
+    :math:`P_\mathrm{p}`, it is cloned and then mutated using using the
+    :meth:`toolbox.mutate` method. The resulting mutant is appended to
+    :math:`P_\mathrm{o}`. In the case of a reproduction, one individual is
+    selected at random from :math:`P_\mathrm{p}`, cloned and appended to
+    :math:`P_\mathrm{o}`.
+
+    This variation is named *Or* because an offspring will never result from
+    both operations crossover and mutation. The sum of both probabilities
+    shall be in :math:`[0, 1]`, the reproduction probability is
+    1 - *cxpb* - *mutpb*.
+    """
+    assert (cxpb + mutpb) <= 1.0, (
+        "The sum of the crossover and mutation probabilities must be smaller "
+        "or equal to 1.0.")
+
+    offspring = []
+    for _ in range(lambda_):
+        op_choice = random.random()
+        if op_choice < cxpb:            # Apply crossover
+            ind1, ind2 = [toolbox.clone(i) for i in random.sample(population, 2)]
+            ind1, ind2 = toolbox.mate(ind1, ind2)
+            del ind1.fitness.values
+            offspring.append(ind1)
+        elif op_choice < cxpb + mutpb:  # Apply mutation
+            ind = toolbox.clone(random.choice(population))
+            ind, = toolbox.mutate(ind)
+            del ind.fitness.values
+            offspring.append(ind)
+        else:                           # Apply reproduction
+            offspring.append(random.choice(population))
+
+    return offspring
+
+def eaMuPlusLambda(population, toolbox, mu, lambda_, cxpb, mutpb, ngen,
+                   stats=None, halloffame=None, verbose=__debug__):
+    r"""This is the :math:`(\mu + \lambda)` evolutionary algorithm.
+
+    :param population: A list of individuals.
+    :param toolbox: A :class:`~deap.base.Toolbox` that contains the evolution
+                    operators.
+    :param mu: The number of individuals to select for the next generation.
+    :param lambda\_: The number of children to produce at each generation.
+    :param cxpb: The probability that an offspring is produced by crossover.
+    :param mutpb: The probability that an offspring is produced by mutation.
+    :param ngen: The number of generation.
+    :param stats: A :class:`~deap.tools.Statistics` object that is updated
+                  inplace, optional.
+    :param halloffame: A :class:`~deap.tools.HallOfFame` object that will
+                       contain the best individuals, optional.
+    :param verbose: Whether or not to log the statistics.
+    :returns: The final population
+    :returns: A class:`~deap.tools.Logbook` with the statistics of the
+              evolution.
+
+    The algorithm takes in a population and evolves it in place using the
+    :func:`varOr` function. It returns the optimized population and a
+    :class:`~deap.tools.Logbook` with the statistics of the evolution. The
+    logbook will contain the generation number, the number of evaluations for
+    each generation and the statistics if a :class:`~deap.tools.Statistics` is
+    given as argument. The *cxpb* and *mutpb* arguments are passed to the
+    :func:`varOr` function. The pseudocode goes as follow ::
+
+        evaluate(population)
+        for g in range(ngen):
+            offspring = varOr(population, toolbox, lambda_, cxpb, mutpb)
+            evaluate(offspring)
+            population = select(population + offspring, mu)
+
+    First, the individuals having an invalid fitness are evaluated. Second,
+    the evolutionary loop begins by producing *lambda_* offspring from the
+    population, the offspring are generated by the :func:`varOr` function. The
+    offspring are then evaluated and the next generation population is
+    selected from both the offspring **and** the population. Finally, when
+    *ngen* generations are done, the algorithm returns a tuple with the final
+    population and a :class:`~deap.tools.Logbook` of the evolution.
+
+    This function expects :meth:`toolbox.mate`, :meth:`toolbox.mutate`,
+    :meth:`toolbox.select` and :meth:`toolbox.evaluate` aliases to be
+    registered in the toolbox. This algorithm uses the :func:`varOr`
+    variation.
+    """
+    logbook = tools.Logbook()
+    logbook.header = ['gen', 'nevals'] + (stats.fields if stats else [])
+
+    # Evaluate the individuals with an invalid fitness
+    invalid_ind = [ind for ind in population if not ind.fitness.valid]
+    fitnesses = toolbox.map(toolbox.evaluate, invalid_ind)
+    for ind, fit in zip(invalid_ind, fitnesses):
+        ind.fitness.values = fit
+
+    if halloffame is not None:
+        halloffame.update(population)
+
+    record = stats.compile(population) if stats is not None else {}
+    logbook.record(gen=0, nevals=len(invalid_ind), **record)
+    if verbose:
+        print(logbook.stream)
+
+    # Begin the generational process
+    for gen in range(1, ngen + 1):
+        # Vary the population
+        offspring = varOr(population, toolbox, lambda_, cxpb, mutpb)
+
+        # Evaluate the individuals with an invalid fitness
+        invalid_ind = [ind for ind in offspring if not ind.fitness.valid]
+        fitnesses = toolbox.map(toolbox.evaluate, invalid_ind)
+        for ind, fit in zip(invalid_ind, fitnesses):
+            ind.fitness.values = fit
+
+        # Update the hall of fame with the generated individuals
+        if halloffame is not None:
+            halloffame.update(offspring)
+
+        # Select the next generation population
+        population[:] = toolbox.select(population + offspring, mu - len(halloffame)) + halloffame.items
+
+        # Update the statistics with the new population
+        record = stats.compile(population) if stats is not None else {}
+        logbook.record(gen=gen, nevals=len(invalid_ind), **record)
+        if verbose:
+            print(logbook.stream)
+
+    return population, logbook
+
+
+toolbox = base.Toolbox()
+def aptidao(individuo):
+	return (custoCaminho(individuo, distancias),)
+
+def salvarstatus(individuo):
+	return individuo.fitness.values
+
+creator.create('Minimizacao', base.Fitness, weights=(-1.0,))
+creator.create('Individuo', list, fitness=creator.Minimizacao)
+
+pop_inicial = inicializaPopulacao(150, 15)
+
+'''toolbox.register('cidades', numpy.random.permutation, pontos)
+toolbox.register('individuos', tools.initIterate, creator.Individuo, toolbox.cidades)
+toolbox.register('populacao', tools.initRepeat, list, toolbox.individuos)
+
+populacao_inicial = toolbox.populacao(n=100)'''
+
+pop_inicial_format = [creator.Individuo(ind) for ind in pop_inicial]
+
+toolbox.register('mate', tools.cxOrdered)
+toolbox.register('mutate', tools.mutInversion)
+toolbox.register('select', tools.selTournament, tournsize=2)
+
+toolbox.register('evaluate', aptidao)
+
+estatistica = tools.Statistics(salvarstatus)
+estatistica.register('mean', numpy.mean)
+estatistica.register('min', numpy.min)
+estatistica.register('max', numpy.max)
+
+hallofame = tools.HallOfFame(1)
+
+
+result, log = eaMuPlusLambda(pop_inicial_format, toolbox, cxpb=0.8, mutpb=0.1,stats=estatistica,halloffame=hallofame, ngen=1000, verbose=True, mu=100, lambda_=100)
+
+print(result)
+print('\nMelhor rota: ', hallofame)
+
