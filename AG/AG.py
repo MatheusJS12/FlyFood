@@ -1,120 +1,23 @@
 from deap import creator, algorithms, base, tools
 import random
 import numpy
+import datetime
 
 toolbox = base.Toolbox()
 
-'''#from file import *
-
-objArq = open("edgesbrasil58.tsp")
+objArq = open("input12_with_R.tsp")
 #se você quiser uma lista onde cada objeto será uma string
 #grande representando uma linha do arquivo:
 #listaLinhas = objArq.readlines() #obs: cada linha terah um enter junto com o ultimo elemento
 
 distancias = {}
 
-for i in range(0, 57): #linhas 1 a 57 pois a 58 nao terá aresta
+for i in range(0, 13): #linhas 1 a 57 pois a 58 nao terá aresta
 	linha = objArq.readline() #le só uma linha do arquivo
 	#transformando a linha em lista de strings:
 	lista = linha.split() #obs: lista de strings (não int)
 
-	for j in range(i+1, 58): #colunas i+1 a 58
-		if len(lista) > 0:
-			peso = int(lista.pop(0)) #obs: peso int, poderia ser float em outro problema
-		else:
-			print(f"Erro! linha {i} do arquivo não possui elementos suficientes")
-			exit()
-		#gravando a aresta em (i, j) e (j, i):
-		distancias[(i,j)] = peso
-		distancias[(j,i)] = peso
-objArq.close()'''
-
-#funcao que retorna o custo total do caminho:
-'''def custoCaminho(permutacao, dicDistancias):
-	#ex: permutacao = [5, 14, 2, 3, 7, ...]
-	soma = 0
-	for i in range(len(permutacao)-1):
-		a = permutacao[i]
-		b = permutacao[i+1]
-		if (a,b) in dicDistancias:
-			soma += dicDistancias[(a,b)]
-		else:
-			print(f"Erro! ({a},{b}) não existe no dicionario!")
-			exit()
-	soma += dicDistancias[(permutacao[-1],permutacao[0])]
-	return soma
-
-def inicializaPopulacao(tamanho, qtdeCidades):
-	#criando uma lista com "tamanho" permutacoes aleatorias de cidades:
-	lista = []
-	for i in range(tamanho):
-		individuo = list(range(qtdeCidades))
-		random.shuffle(individuo)
-		lista.append(individuo)
-	return lista
-
-def calculaAptidao(populacao, dicDistancias):
-	listaAptidao = []
-	for elem in populacao:
-		listaAptidao.append(custoCaminho(elem, dicDistancias))
-	return listaAptidao
-
-def aptidao(individuo):
-	return (custoCaminho(individuo, distancias),)
-
-def salvarstatus(individuo):
-	return individuo.fitness.values
-
-creator.create('Minimizacao', base.Fitness, weights=(-1.0,))
-creator.create('Individuo', list, fitness=creator.Minimizacao)
-
-pop_inicial = inicializaPopulacao(300, 58)'''
-
-'''toolbox.register('cidades', numpy.random.permutation, pontos)
-toolbox.register('individuos', tools.initIterate, creator.Individuo, toolbox.cidades)
-toolbox.register('populacao', tools.initRepeat, list, toolbox.individuos)
-
-populacao_inicial = toolbox.populacao(n=100)'''
-
-'''pop_inicial_format = [creator.Individuo(ind) for ind in pop_inicial]
-
-toolbox.register('mate', tools.cxOrdered)
-toolbox.register('mutate', tools.mutShuffleIndexes, indpb=0.02)
-toolbox.register('select', tools.selTournament, tournsize=5)
-
-toolbox.register('evaluate', aptidao)
-
-estatistica = tools.Statistics(salvarstatus)
-estatistica.register('mean', numpy.mean)
-estatistica.register('min', numpy.min)
-estatistica.register('max', numpy.max)
-
-hallofame = tools.HallOfFame(1)
-
-
-result, log = algorithms.eaSimple(pop_inicial_format, toolbox, cxpb=0.8, mutpb=0.1,stats=estatistica,halloffame=hallofame, ngen=10000, verbose=True)
-
-print(result)
-print('\nMelhor rota: ', hallofame)'''
-
-
-#from file import *
-
-toolbox = base.Toolbox
-
-objArq = open("matriz14_with_R.tsp")
-#se você quiser uma lista onde cada objeto será uma string
-#grande representando uma linha do arquivo:
-#listaLinhas = objArq.readlines() #obs: cada linha terah um enter junto com o ultimo elemento
-
-distancias = {}
-
-for i in range(0, 15): #linhas 1 a 57 pois a 58 nao terá aresta
-	linha = objArq.readline() #le só uma linha do arquivo
-	#transformando a linha em lista de strings:
-	lista = linha.split() #obs: lista de strings (não int)
-
-	for j in range(i+1, 15): #colunas i+1 a 58
+	for j in range(i+1, 13): #colunas i+1 a 58
 		if len(lista) > 0:
 			peso = int(lista.pop(0)) #obs: peso int, poderia ser float em outro problema
 		else:
@@ -313,13 +216,7 @@ def salvarstatus(individuo):
 creator.create('Minimizacao', base.Fitness, weights=(-1.0,))
 creator.create('Individuo', list, fitness=creator.Minimizacao)
 
-pop_inicial = inicializaPopulacao(150, 15)
-
-'''toolbox.register('cidades', numpy.random.permutation, pontos)
-toolbox.register('individuos', tools.initIterate, creator.Individuo, toolbox.cidades)
-toolbox.register('populacao', tools.initRepeat, list, toolbox.individuos)
-
-populacao_inicial = toolbox.populacao(n=100)'''
+pop_inicial = inicializaPopulacao(200, 13)
 
 pop_inicial_format = [creator.Individuo(ind) for ind in pop_inicial]
 
@@ -335,10 +232,12 @@ estatistica.register('min', numpy.min)
 estatistica.register('max', numpy.max)
 
 hallofame = tools.HallOfFame(1)
+inicio = datetime.datetime.now()
 
 
-result, log = eaMuPlusLambda(pop_inicial_format, toolbox, cxpb=0.8, mutpb=0.1,stats=estatistica,halloffame=hallofame, ngen=1000, verbose=True, mu=100, lambda_=100)
+result, log = eaMuPlusLambda(pop_inicial_format, toolbox, cxpb=0.8, mutpb=0.1,stats=estatistica,halloffame=hallofame, ngen=10000, verbose=True, mu=250, lambda_=250)
 
 print(result)
 print('\nMelhor rota: ', hallofame)
-
+fim = datetime.datetime.now()
+print(f'Tempo de execução: {fim - inicio}')
